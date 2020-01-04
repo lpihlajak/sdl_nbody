@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include "SDL.h"
 
-#define WIDTH 1280
-#define HEIGHT 720
+#define WIDTH 1920
+#define HEIGHT 1080
 
 #define PIXELSIZE 4
 
@@ -12,18 +12,12 @@
 
 #define COLOR_INTENSITY 2000
 
-#define GRAV_LIMIT 0.5
+#define GRAV_LIMIT 111110.5
 
 float metaCalc(float x, float y)
 {
     return ((float)1.0 / (x * x + y * y));
 }
-
-float gravCalc(float x, float y)
-{
-    return 1.0/(x * x + y * y);
-}
-// objects
 
 struct Vec2 {
     float x;
@@ -63,16 +57,16 @@ void updateForces(struct Meta meta[3])
             float gravity;
             
             if((fabsf(xDelta) > 10) && (fabsf(yDelta) > 10))
-            {
-                gravity = gravCalc((float)xDelta, (float)yDelta)*100.0; // *1000 makes gravity 1 when overlapping
+            {               
+                gravity = 1.0 / ( sqrt((xDelta * xDelta + yDelta * yDelta))); // distance sqrt( (x2-x1)^2 + (y2-y1)^2 ) 
             }
             else
             {
                 gravity = 0.0;
             }
 
-            if (gravity > GRAV_LIMIT)
-                gravity = GRAV_LIMIT;
+            //if (gravity > GRAV_LIMIT)
+            //    gravity = GRAV_LIMIT;
 
             if (xDelta > 0)
                 i = 1.0;
@@ -152,7 +146,7 @@ int main()
     //printf("hello");
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, SDL_WINDOW_FULLSCREEN, &window, &renderer);
+    SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer); //SDL_WINDOW_FULLSCREEN
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -178,20 +172,20 @@ int main()
                 amplitude3 = metaCalc(x - meta[2].pos.x, y - meta[2].pos.y);
 
                 amplitudeSum = amplitude1 + amplitude2 + amplitude3;
-                //float color = ((float)0xFF * amplitudeSum * 20000);
+                float color = ((float)0xFF * amplitudeSum * 20000);
                
-                if(amplitudeSum > 0.005)
+                if(amplitudeSum > 0.0005)
                 {
-                    //SDL_SetRenderDrawColor(renderer, (uint8_t)((float)color * amplitude1 * COLOR_INTENSITY),
-                    //    (uint8_t)((float)color * amplitude2 * COLOR_INTENSITY),
-                    //    (uint8_t)((float)color * amplitude3 * COLOR_INTENSITY),
-                    //    255);
-                    
-                    SDL_SetRenderDrawColor(renderer, 
-                        0xFF,
-                        0xFF,
-                        0xFF,
+                    SDL_SetRenderDrawColor(renderer, (uint8_t)(20000.0 * amplitude1 ),
+                        (uint8_t)(20000.0 * amplitude2),
+                        (uint8_t)(20000.0 * amplitude3),
                         255);
+                    
+                    //SDL_SetRenderDrawColor(renderer, 
+                    //    0xFF,
+                    //    0xFF,
+                    //   0xFF,
+                    //    255);
                         
                    // SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
                     SDL_RenderDrawPoint(renderer, x, y);
