@@ -59,20 +59,22 @@ void updateForces(struct Meta meta[3])
             float xDelta = (meta[iter3].pos.x - meta[iter2].pos.x);
             float yDelta = (meta[iter3].pos.y - meta[iter2].pos.y);
            
-            float i; // direction vector for x
-            float j; // direction vector for y
+            float i; // direction for x
+            float j; // direction for y
 
             float gravity;
             
-            if((fabsf(xDelta) > 15) && (fabsf(yDelta) > 15))
-            {               
-                gravity = 1.0 / ( sqrt((xDelta * xDelta + yDelta * yDelta))); // distance sqrt( (x2-x1)^2 + (y2-y1)^2 ) 
+			float distance = sqrt((xDelta * xDelta + yDelta * yDelta));
+			
+            if (distance > 0.25)
+            {
+                gravity = 1.0 / distance; // distance sqrt( (x2-x1)^2 + (y2-y1)^2 ) 
             }
             else
             {
                 gravity = 0.0;
             }
-
+            
             //if (gravity > GRAV_LIMIT)
             //    gravity = GRAV_LIMIT;
 
@@ -86,12 +88,13 @@ void updateForces(struct Meta meta[3])
             else
                 j = -1.0;
 
+
             meta[iter2].pos.x += meta[iter2].v.x + i * gravity/2.0; // calculate position
             meta[iter2].v.x += i * gravity; // calc speed
          
             meta[iter2].pos.y += meta[iter2].v.y + j * gravity/2.0; // calculate position
             meta[iter2].v.y += j * gravity; // calc speed
-            
+       
             
 
             //printf("\nX:%fY:%f v.x: %f, v.y: %f, i: %f, j: %f, xDelta: %f yDelta: % Gravity: %f", meta[iter2].pos.x, meta[iter2].pos.y, meta[iter2].v.x, meta[iter2].v.y, i, j, xDelta, yDelta, gravity);
@@ -99,6 +102,7 @@ void updateForces(struct Meta meta[3])
             iter3++;
         }
 
+        
         if ((meta[iter2].pos.y < 0) || (meta[iter2].pos.y > HEIGHT))
         {
             meta[iter2].v.y *= -0.5;
@@ -109,6 +113,7 @@ void updateForces(struct Meta meta[3])
             meta[iter2].v.x *= -0.5;
             meta[iter2].pos.x += meta[iter2].v.x*2.0;
         }
+        
        
         iter2++;
     }
@@ -142,7 +147,7 @@ int main()
     meta[1].v.x = 0.0;
     meta[1].v.y = 0;
 
-    meta[2].pos.x = WIDTH/2-100;
+    meta[2].pos.x = WIDTH/2-80;
     meta[2].pos.y = HEIGHT/2+100;
     meta[2].v.x = 0.0;
     meta[2].v.y = 0.0;
